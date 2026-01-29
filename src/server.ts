@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 4000;
       }
       console.log("✅ Columnas de estado verificadas/agregadas.");
     }
-    app.listen(PORT, () => console.log(`🚀 Servidor backend corriendo en http://localhost:${PORT}`));
+    app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Servidor backend corriendo en puerto ${PORT}`));
   } catch (err) {
     console.error("❌ Error al conectar con la base de datos:", err);
   }
