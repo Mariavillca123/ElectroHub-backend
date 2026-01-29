@@ -197,7 +197,8 @@ export const generateSalesReport = async (req: any, res: Response) => {
 
     // Footer
     doc.moveDown(2);
-    doc.fontSize(9).text('Reporte generado automáticamente por ElectroHub', { align: 'center', color: '#999' });
+    doc.fontSize(9).fillColor('#999999').text('Reporte generado automáticamente por ElectroHub', { align: 'center' });
+    doc.fillColor('#000000'); // Reset a color por defecto
 
     doc.end();
   } catch (error) {
