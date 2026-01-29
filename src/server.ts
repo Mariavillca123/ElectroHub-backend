@@ -1,7 +1,7 @@
 import app from "./app";
 import { pool } from "./config/db";
 
-const PORT = process.env.PORT || 4000;
+const PORT = parseInt(process.env.PORT || '4000', 10);
 
 (async () => {
   try {
