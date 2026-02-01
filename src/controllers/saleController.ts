@@ -51,12 +51,18 @@ export const getSales = async (req: any, res: Response) => {
 export const createSale = async (req: any, res: Response) => {
   const { user_id, product_id, quantity } = req.body;
 
-  const [productRows]: any = await pool.query("SELECT price, vendor_id FROM products WHERE id = ?", [product_id]);
+  const [productRows]: any = await pool.query("SELECT price, vendor_id, stock FROM products WHERE id = ?", [product_id]);
   if (!productRows.length) return res.status(404).json({ message: "Producto no encontrado" });
 
   const price = productRows[0].price;
   const vendor_id = productRows[0].vendor_id;
+  const currentStock = productRows[0].stock;
   const total = price * quantity;
+
+  // Validar que haya stock suficiente
+  if (currentStock < quantity) {
+    return res.status(400).json({ message: `Stock insuficiente. Disponible: ${currentStock}` });
+  }
 
   await pool.query("INSERT INTO sales (vendor_id, user_id, product_id, quantity, total) VALUES (?, ?, ?, ?, ?)", [
     vendor_id,
@@ -65,6 +71,9 @@ export const createSale = async (req: any, res: Response) => {
     quantity,
     total,
   ]);
+
+  // Actualizar el stock restando la cantidad vendida
+  await pool.query("UPDATE products SET stock = stock - ? WHERE id = ?", [quantity, product_id]);
 
   res.status(201).json({ message: "Venta registrada" });
 };
